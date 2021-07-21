@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/bethel-school-of-technology/team-razz-dazz-backend#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongodb": "^4.0.1"
   }
 }
