@@ -6,12 +6,15 @@ var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 
 var indexRouter = require("./routes/index");
-var customerRouter = require("./routes/customer");
+var orderRouter = require("./routes/order");
+var userRouter = require("./routes/user");
 
 var app = express();
 
 var connectionString =
-  "mongodb+srv://steven:Password1!@formsubmit.3irda.mongodb.net/Customers?retryWrites=true&w=majority";
+  "mongodb+srv://steven:Password1!@cookies.3irda.mongodb.net/CookieForms?retryWrites=true&w=majority";
+
+;
 mongoose.connect(
   connectionString,
   { useNewUrlParser: true, useUnifiedTopology: true },
@@ -29,6 +32,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/", indexRouter);
-app.use("/api/customer", customerRouter);
+app.use("/api/order", orderRouter);
+app.use("/api/user", userRouter);
 
 module.exports = app;
