@@ -5,6 +5,7 @@ var logger = require("morgan");
 var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 
+
 var indexRouter = require("./routes/index");
 var orderRouter = require("./routes/order");
 var userRouter = require("./routes/user");
@@ -30,6 +31,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 
 app.use("/", indexRouter);
 app.use("/api/order", orderRouter);

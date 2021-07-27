@@ -26,6 +26,7 @@ var userSchema = new mongoose.Schema({
   deleted: {
     type: Boolean,
     required: false,
+    default: false
   },
   admin: {
     type: Boolean,
