@@ -101,4 +101,22 @@ router.get("/profile", async (req, res, next) => {
     });
   }
 });
+
+router.get("/admin", async (req, res, next) => {
+  let myToken = req.headers.authorization;
+  console.log(myToken);
+  if (myToken) {
+    let currentUser = await tokenService.verifyToken(myToken);
+    if (currentUser.admin) {
+      console.log("I'm an admin!", currentUser);
+      let allUsers = await User.find({
+        deleted: false,
+      });
+      console.log("The users", allUsers);
+    } else {
+      res.send("unauthorized");
+    }
+  }
+});
+
 module.exports = router;

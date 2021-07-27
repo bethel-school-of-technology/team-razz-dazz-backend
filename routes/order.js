@@ -1,6 +1,7 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var Order = require('../models/order');
+var Order = require("../models/order");
+var tokenService = require("../services/auth");
 
 router.post("/ordersubmit", async (req, res, next) => {
   try {
@@ -11,7 +12,7 @@ router.post("/ordersubmit", async (req, res, next) => {
       email: req.body.email,
       phoneNumber: req.body.phoneNumber,
       address: req.body.address,
-      orderSummary: req.body.orderSummary
+      orderSummary: req.body.orderSummary,
     });
     console.log(newOrder);
     let result = await newOrder.save();

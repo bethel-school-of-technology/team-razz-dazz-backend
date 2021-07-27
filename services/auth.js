@@ -21,7 +21,7 @@ var tokenService = {
       let decoded = jwt.verify(token, "mysupersecretkey");
       return User.findById(decoded._id);
     } catch (err) {
-      return null;
+      return err;
     }
   },
 };
