@@ -102,6 +102,7 @@ router.get("/profile", async (req, res, next) => {
   }
 });
 
+// Admin Access
 router.get("/admin", async (req, res, next) => {
   let myToken = req.headers.authorization;
   console.log(myToken);
