@@ -11,7 +11,7 @@ var tokenService = {
       },
       "mysupersecretkey",
       {
-        expiresIn: "1h",
+        expiresIn: "24h",
       }
     );
     return token;

@@ -19,7 +19,7 @@ router.post("/register", async (req, res, next) => {
     console.log(newUser);
     let result = await newUser.save();
     console.log(result);
-    res.send("user created");
+    res.send(newUser);
   } catch (err) {
     console.log(err);
     res.send("error");
@@ -36,6 +36,7 @@ router.post("/login", async (req, res, next) => {
         status: 500,
       });
     }
+
     console.log(user);
     if (user) {
       let passwordMatch = passwordService.comparePasswords(
@@ -49,16 +50,11 @@ router.post("/login", async (req, res, next) => {
           status: 200,
           token,
         });
-      } else {
-        console.log("Wrong Password");
-        res.json({
-          message: "Wrong Password",
-          status: 403,
-        });
       }
     } else {
+      console.log("Wrong password");
       res.json({
-        message: "Wrong Username",
+        message: "Wrong password",
         status: 403,
       });
     }
@@ -75,6 +71,7 @@ router.get("/profile", async (req, res, next) => {
     console.log(currentUser);
 
     if (currentUser) {
+      
       let responseUser = {
         firstName: currentUser.firstName,
         lastName: currentUser.lastName,
