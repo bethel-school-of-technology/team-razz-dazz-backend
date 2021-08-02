@@ -5,7 +5,7 @@ var logger = require("morgan");
 var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 var cors = require('cors');
-
+var tokenService = require("./services/auth");
 
 var indexRouter = require("./routes/index");
 var orderRouter = require("./routes/order");
@@ -35,9 +35,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
 
+// app.use(async (req, res, next) => {
+//   const header = req.headers.authorization;
+
+//   if (!header) {
+//     return next();
+//   }
+
+//   const token = header.split('')[1];
+
+//   const user = await tokenService.verifyToken(token);
+//   req.user = user;
+//   next();
+// })
+
 
 app.use("/", indexRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/user", userRouter);
+
 
 module.exports = app;
