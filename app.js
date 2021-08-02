@@ -7,9 +7,9 @@ var bodyParser = require("body-parser");
 var cors = require('cors');
 var tokenService = require("./services/auth");
 
-var indexRouter = require("./routes/index");
-var orderRouter = require("./routes/order");
-var userRouter = require("./routes/user");
+var indexRouter = require("./routes/api/index");
+var orderRouter = require("./routes/api/order");
+var userRouter = require("./routes/api/user");
 
 var app = express();
 
@@ -35,19 +35,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
 
-// app.use(async (req, res, next) => {
-//   const header = req.headers.authorization;
+app.use(async (req, res, next) => {
+  const header = req.headers.authorization;
 
-//   if (!header) {
-//     return next();
-//   }
+  if (!header) {
+    return next();
+  }
 
-//   const token = header.split('')[1];
+  const token = header.split('')[1];
 
-//   const user = await tokenService.verifyToken(token);
-//   req.user = user;
-//   next();
-// })
+  const user = await tokenService.verifyToken(token);
+  req.user = user;
+  next();
+})
 
 
 app.use("/", indexRouter);
