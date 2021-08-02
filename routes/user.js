@@ -61,6 +61,7 @@ router.post("/login", async (req, res, next) => {
   });
 });
 
+
 // GET user information/profile
 router.get("/profile", async (req, res, next) => {
   let myToken = req.headers.authorization;
