@@ -33,6 +33,42 @@ router.post("/ordersubmit", async (req, res, next) => {
   }
 });
 
+// GET order information/new orders
+router.get("/usersubmission", async (req, res, next) => {
+  let myToken = req.headers.authorization;
+  console.log(myToken);
+
+  if (myToken) {
+    let currentUser = await tokenService.verifyToken(myToken);
+    console.log(currentUser);
+
+    if (currentUser) {
+      let bakedGoods = {
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        email: currentUser.email,
+        phoneNumber: currentUser.phoneNumber,
+        address: currentUser.address,
+        orderSummary: currentUser.orderSummary,
+      };
+      res.json({
+        message: "Let's take a look at your delicious order summary!",
+        status: 200,
+        currentUser,
+      });
+    } else {
+      res.json({
+        message: "Have you signed in, yet?",
+        status: 403,
+      });
+    }
+  } else {
+    res.json({
+      message: "Whoops, something's not jiving",
+      status: 403,
+    });
+  }
+});
 
 
 module.exports = router;
