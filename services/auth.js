@@ -20,7 +20,7 @@ var tokenService = {
   verifyToken: function (token) {
     try {
       let decoded = jwt.verify(token, secretKey);
-      return User.findByPk(decoded._id);
+      return User.findById(decoded._id);
     } catch (err) {
       return err;
     }

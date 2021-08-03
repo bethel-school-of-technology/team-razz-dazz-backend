@@ -7,9 +7,9 @@ var bodyParser = require("body-parser");
 var cors = require('cors');
 var tokenService = require("./services/auth");
 
-var indexRouter = require("./routes/api/index");
-var orderRouter = require("./routes/api/order");
-var userRouter = require("./routes/api/user");
+var indexRouter = require("./routes/index");
+var orderRouter = require("./routes/order");
+var userRouter = require("./routes/user");
 
 var app = express();
 
