@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const bcrypt = require("bcrypt");
+
+const secretKey = 'mysupersecretkey';
 
 var tokenService = {
   assignToken: function (user) {
@@ -9,16 +10,16 @@ var tokenService = {
         username: user.username,
         _id: user._id,
       },
-      "mysupersecretkey",
+      secretKey,
       {
-        expiresIn: "1h",
+        expiresIn: "24h",
       }
     );
     return token;
   },
   verifyToken: function (token) {
     try {
-      let decoded = jwt.verify(token, "mysupersecretkey");
+      let decoded = jwt.verify(token, secretKey);
       return User.findById(decoded._id);
     } catch (err) {
       return err;

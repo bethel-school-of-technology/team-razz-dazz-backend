@@ -33,6 +33,7 @@ router.post("/ordersubmit", async (req, res, next) => {
   }
 });
 
+
 // GET order information/new orders
 router.get("/usersubmission", async (req, res, next) => {
   let myToken = req.headers.authorization;
@@ -69,6 +70,5 @@ router.get("/usersubmission", async (req, res, next) => {
     });
   }
 });
-
 
 module.exports = router;
