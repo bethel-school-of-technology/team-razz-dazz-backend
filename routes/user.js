@@ -26,7 +26,35 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
+// router.post("/login", async (req, res, next) => {
+//   User.findOne({
+//     where: {
+//       username: req.body.username,
+//     },
+//   }).then((user) => {
+//     if (!user) {
+//       res.status(404).send("Invalid Username");
+//       return;
+//     }
 
+//     const valid = bcrypt.compare(req.body.password, user.password);
+
+//     if (valid) {
+//       let token = tokenService.assignToken(user);
+//       res.json({
+//         message: "Login successful",
+//         status: 200,
+//         token,
+//       });
+//     } else {
+//       console.log("Wrong Password");
+//       res.json({
+//         message: "Wrong Password",
+//         status: 403,
+//       });
+//     }
+//   });
+// });
 
 //User Login
 router.post("/login", async (req, res, next) => {
@@ -38,6 +66,13 @@ router.post("/login", async (req, res, next) => {
         status: 500,
       });
     }
+
+    // if(!user) {
+    //   console.log("This user does not exist");
+    //   res.json({
+    //     message: "This user does not exist"
+    //   });
+    // }
 
     console.log(user);
     if (user) {
@@ -52,17 +87,16 @@ router.post("/login", async (req, res, next) => {
           status: 200,
           token,
         });
+      } else {
+        console.log("Wrong password");
+        res.json({
+          message: "Wrong password",
+          status: 403,
+        });
       }
-    } else {
-      console.log("Wrong password");
-      res.json({
-        message: "Wrong password",
-        status: 403,
-      });
     }
   });
 });
-
 
 // GET user information/profile
 router.get("/profile", async (req, res, next) => {
@@ -74,7 +108,6 @@ router.get("/profile", async (req, res, next) => {
     console.log(currentUser);
 
     if (currentUser) {
-      
       let responseUser = {
         firstName: currentUser.firstName,
         lastName: currentUser.lastName,
@@ -112,6 +145,10 @@ router.get("/admin", async (req, res, next) => {
       console.log("I'm an admin!", currentUser);
       let allUsers = await User.find({
         deleted: false,
+      });
+      res.json({
+        message: "The admin view of all users has been loaded successfully",
+        allUsers,
       });
       console.log("The users", allUsers);
     } else {
