@@ -26,6 +26,8 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
+
+
 //User Login
 router.post("/login", async (req, res, next) => {
   User.findOne({ username: req.body.username }, function (err, user) {

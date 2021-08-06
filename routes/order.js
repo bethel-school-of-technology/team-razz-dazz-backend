@@ -3,6 +3,29 @@ var router = express.Router();
 var Order = require("../models/order");
 var tokenService = require("../services/auth");
 var User = require("../models/user");
+var nodemailer = require('nodemailer');
+var cors = require('cors');
+const creds = require('../config');
+
+
+var transport = {
+  host: "smtp.gmail.com",
+  port: 587,
+  auth: {
+    user: creds.USER,
+    pass: creds.PASS,
+  },
+};
+
+var transporter = nodemailer.createTransport(transport);
+
+transporter.verify((error, success) => {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Server is ready to take messages");
+  }
+});
 
 // New order from User
 router.post("/ordersubmit", async (req, res, next) => {
@@ -31,6 +54,51 @@ router.post("/ordersubmit", async (req, res, next) => {
       res.send ("unauthorized")
     }
   }
+});
+
+//Order submit success email
+router.post("/send", (req, res, next) => {
+  var firstName = req.body.firstName;
+  var lastName = req.body.lastName;
+  var email = req.body.email;
+  var phoneNumber = req.body.phoneNumber;
+  var address = req.body.address
+  var orderSummary = req.body.orderSummary;
+  var content = `firstname: ${firstName} \n lastname: ${lastName} \n email: ${email} \n mobile: ${phoneNumber} \n address: ${address} \n order: ${orderSummary} `;
+
+  var mail = {
+    from: "The Noble Cookie",
+    to: "searcycreative@gmail.com",
+    subject: "New Message from Order Form",
+    text: content,
+  };
+
+  transporter.sendMail(mail, (err, data) => {
+    if (err) {
+      res.json({
+        status: "fail",
+      });
+    } else {
+      res.json({
+        status: "success",
+      });
+      transporter.sendMail(
+        {
+          from: "The Noble Cookie",
+          to: email,
+          subject: "Order submission was successful",
+          text: `Thank you for ordering with us! \n\n Order details\nfirstname: ${firstName} \n lastname: ${lastName} \n email: ${email} \n mobile: ${phoneNumber} \n address: ${address} \n order: ${orderSummary} `,
+        },
+        function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Message sent: " + info.response);
+          }
+        }
+      );
+    }
+  });
 });
 
 
