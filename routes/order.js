@@ -51,7 +51,7 @@ router.post("/ordersubmit", async (req, res, next) => {
       console.log(result);
       res.send("order created");
     } else {
-      res.send ("unauthorized")
+      res.send("unauthorized")
     }
   }
 });
@@ -103,7 +103,7 @@ router.post("/send", (req, res, next) => {
 
 
 // GET order information/new orders
-router.get("/usersubmission", async (req, res, next) => {
+router.get("order/usersubmission", async (req, res, next) => {
   let myToken = req.headers.authorization;
   console.log(myToken);
 
@@ -111,30 +111,25 @@ router.get("/usersubmission", async (req, res, next) => {
     let currentUser = await tokenService.verifyToken(myToken);
     console.log(currentUser);
 
-    if (currentUser) {
-      let bakedGoods = {
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
+    if (currentUser.email) {
+      let bakedGoods = await Order.find({
         email: currentUser.email,
-        phoneNumber: currentUser.phoneNumber,
-        address: currentUser.address,
-        orderSummary: currentUser.orderSummary,
-      };
-      res.json({
-        message: "Let's take a look at your delicious order summary!",
-        status: 200,
-        currentUser,
       });
-    } else {
-      res.json({
-        message: "Have you signed in, yet?",
-        status: 403,
-      });
-    }
+    };
+    res.json({
+      message: "Let's take a look at your delicious order summary!",
+      status: 200,
+      currentUser
+    });
+  } else {
+    res.json({
+      message: "Have you signed in, yet?",
+      status: 403
+    });
   } else {
     res.json({
       message: "Whoops, something's not jiving",
-      status: 403,
+      status: 403
     });
   }
 });
