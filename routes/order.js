@@ -5,27 +5,27 @@ var tokenService = require("../services/auth");
 var User = require("../models/user");
 var nodemailer = require('nodemailer');
 var cors = require('cors');
-const creds = require('../config');
+// const creds = require('../config');
 
 
-var transport = {
-  host: "smtp.gmail.com",
-  port: 587,
-  auth: {
-    user: creds.USER,
-    pass: creds.PASS,
-  },
-};
+// var transport = {
+//   host: "smtp.gmail.com",
+//   port: 587,
+//   auth: {
+//     user: creds.USER,
+//     pass: creds.PASS,
+//   },
+// };
 
-var transporter = nodemailer.createTransport(transport);
+// var transporter = nodemailer.createTransport(transport);
 
-transporter.verify((error, success) => {
-  if (error) {
-    console.log(error);
-  } else {
-    console.log("Server is ready to take messages");
-  }
-});
+// transporter.verify((error, success) => {
+//   if (error) {
+//     console.log(error);
+//   } else {
+//     console.log("Server is ready to take messages");
+//   }
+// });
 
 // New order from User
 router.post("/ordersubmit", async (req, res, next) => {
@@ -57,53 +57,53 @@ router.post("/ordersubmit", async (req, res, next) => {
 });
 
 //Order submit success email
-router.post("/send", (req, res, next) => {
-  var firstName = req.body.firstName;
-  var lastName = req.body.lastName;
-  var email = req.body.email;
-  var phoneNumber = req.body.phoneNumber;
-  var address = req.body.address
-  var orderSummary = req.body.orderSummary;
-  var content = `firstname: ${firstName} \n lastname: ${lastName} \n email: ${email} \n mobile: ${phoneNumber} \n address: ${address} \n order: ${orderSummary} `;
+// router.post("/send", (req, res, next) => {
+//   var firstName = req.body.firstName;
+//   var lastName = req.body.lastName;
+//   var email = req.body.email;
+//   var phoneNumber = req.body.phoneNumber;
+//   var address = req.body.address
+//   var orderSummary = req.body.orderSummary;
+//   var content = `firstname: ${firstName} \n lastname: ${lastName} \n email: ${email} \n mobile: ${phoneNumber} \n address: ${address} \n order: ${orderSummary} `;
 
-  var mail = {
-    from: "The Noble Cookie",
-    to: "searcycreative@gmail.com",
-    subject: "New Message from Order Form",
-    text: content,
-  };
+//   var mail = {
+//     from: "The Noble Cookie",
+//     to: "searcycreative@gmail.com",
+//     subject: "New Message from Order Form",
+//     text: content,
+//   };
 
-  transporter.sendMail(mail, (err, data) => {
-    if (err) {
-      res.json({
-        status: "fail",
-      });
-    } else {
-      res.json({
-        status: "success",
-      });
-      transporter.sendMail(
-        {
-          from: "The Noble Cookie",
-          to: email,
-          subject: "Order submission was successful",
-          text: `Thank you for ordering with us! \n\n Order details\nfirstname: ${firstName} \n lastname: ${lastName} \n email: ${email} \n mobile: ${phoneNumber} \n address: ${address} \n order: ${orderSummary} `,
-        },
-        function (error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("Message sent: " + info.response);
-          }
-        }
-      );
-    }
-  });
-});
+//   transporter.sendMail(mail, (err, data) => {
+//     if (err) {
+//       res.json({
+//         status: "fail",
+//       });
+//     } else {
+//       res.json({
+//         status: "success",
+//       });
+//       transporter.sendMail(
+//         {
+//           from: "The Noble Cookie",
+//           to: email,
+//           subject: "Order submission was successful",
+//           text: `Thank you for ordering with us! \n\n Order details\nfirstname: ${firstName} \n lastname: ${lastName} \n email: ${email} \n mobile: ${phoneNumber} \n address: ${address} \n order: ${orderSummary} `,
+//         },
+//         function (error, info) {
+//           if (error) {
+//             console.log(error);
+//           } else {
+//             console.log("Message sent: " + info.response);
+//           }
+//         }
+//       );
+//     }
+//   });
+// });
 
 
 // GET order information/new orders
-router.get("order/usersubmission", async (req, res, next) => {
+router.get("/usersubmission", async (req, res, next) => {
   let myToken = req.headers.authorization;
   console.log(myToken);
 
@@ -115,68 +115,64 @@ router.get("order/usersubmission", async (req, res, next) => {
       let bakedGoods = await Order.find({
         email: currentUser.email,
       });
-    };
-    res.json({
-      message: "Let's take a look at your delicious order summary!",
-      status: 200,
-      currentUser
-    });
-  } else {
-    res.json({
-      message: "Have you signed in, yet?",
-      status: 403
-    });
-  } else {
+      res.json({
+        message: "Let's take a look at your delicious order summary!",
+        status: 200,
+        currentUser,
+        bakedGoods
+      }); 
+    } else  {
     res.json({
       message: "Whoops, something's not jiving",
       status: 403
     });
   }
+}
 });
 
 //Contact Form
-router.post("/contact", (req, res, next) => {
-  var firstName = req.body.firstName;
-  var lastName = req.body.lastName;
-  var email = req.body.email;
-  var phoneNumber = req.body.phoneNumber;
-  var address = req.body.address;
-  var orderSummary = req.body.orderSummary;
-  var content = `firstname: ${firstName} \n lastname: ${lastName} \n email: ${email} \n mobile: ${phoneNumber} \n address: ${address} \n message: ${orderSummary} `;
+// router.post("/contact", (req, res, next) => {
+//   var firstName = req.body.firstName;
+//   var lastName = req.body.lastName;
+//   var email = req.body.email;
+//   var phoneNumber = req.body.phoneNumber;
+//   var address = req.body.address;
+//   var orderSummary = req.body.orderSummary;
+//   var content = `firstname: ${firstName} \n lastname: ${lastName} \n email: ${email} \n mobile: ${phoneNumber} \n address: ${address} \n message: ${orderSummary} `;
 
-  var mail = {
-    from: "The Noble Cookie",
-    to: "searcycreative@gmail.com",
-    subject: "New Message from Contact Form",
-    text: content,
-  };
+//   var mail = {
+//     from: "The Noble Cookie",
+//     to: "searcycreative@gmail.com",
+//     subject: "New Message from Contact Form",
+//     text: content,
+//   };
 
-  transporter.sendMail(mail, (err, data) => {
-    if (err) {
-      res.json({
-        status: "fail",
-      });
-    } else {
-      res.json({
-        status: "success",
-      });
-      transporter.sendMail(
-        {
-          from: "The Noble Cookie",
-          to: email,
-          subject: "Thank you for reaching out.",
-          text: `Thank you for contacting us! We will get back to you shortly`,
-        },
-        function (error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("Message sent: " + info.response);
-          }
-        }
-      );
-    }
-  });
-});
+//   transporter.sendMail(mail, (err, data) => {
+//     if (err) {
+//       res.json({
+//         status: "fail",
+//       });
+//     } else {
+//       res.json({
+//         status: "success",
+//       });
+//       transporter.sendMail(
+//         {
+//           from: "The Noble Cookie",
+//           to: email,
+//           subject: "Thank you for reaching out.",
+//           text: `Thank you for contacting us! We will get back to you shortly`,
+//         },
+//         function (error, info) {
+//           if (error) {
+//             console.log(error);
+//           } else {
+//             console.log("Message sent: " + info.response);
+//           }
+//         }
+//       );
+//     }
+//   });
+// });
 
 module.exports = router;
