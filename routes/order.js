@@ -37,7 +37,7 @@ router.post("/ordersubmit", async (req, res, next) => {
     console.log(currentUser);
 
     if (currentUser) {
-      // console.log("I'm the current user!", currentUser);
+      console.log("I'm the current user!", currentUser);
       let newOrder = new Order({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -120,14 +120,14 @@ router.get("/usersubmission", async (req, res, next) => {
         status: 200,
         currentUser,
         bakedGoods
-      }); 
-    } else  {
-    res.json({
-      message: "Whoops, something's not jiving",
-      status: 403
-    });
+      });
+    } else {
+      res.json({
+        message: "Whoops, something's not jiving",
+        status: 403
+      });
+    }
   }
-}
 });
 
 // Contact Form
