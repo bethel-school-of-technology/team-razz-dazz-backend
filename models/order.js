@@ -11,7 +11,7 @@ var orderSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,    
+    required: true,
   },
   phoneNumber: {
     type: Number,
@@ -24,6 +24,11 @@ var orderSchema = new mongoose.Schema({
   orderSummary: {
     type: String,
     required: true,
+  },
+  deleted: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
 });
 

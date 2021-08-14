@@ -111,9 +111,9 @@ router.get("/usersubmission", async (req, res, next) => {
     let currentUser = await tokenService.verifyToken(myToken);
     console.log(currentUser);
 
-    if (currentUser.email) {
+    if (currentUser) {
       let bakedGoods = await Order.find({
-        email: currentUser.email,
+        email: currentUser.email
       });
       res.json({
         message: "Let's take a look at your delicious order summary!",
@@ -173,6 +173,28 @@ router.post("/contact", (req, res, next) => {
       );
     }
   });
+});
+
+// Admin View all orders
+router.get("/adminorderview", async (req, res, next) => {
+  let myToken = req.headers.authorization;
+  console.log(myToken);
+  if (myToken) {
+    let currentUser = await tokenService.verifyToken(myToken);
+    if (currentUser.admin) {
+      console.log("I'm an admin!", currentUser);
+      let allOrders = await Order.find({
+        deleted: false,
+      });
+      res.json({
+        message: "The admin view of all orders has been loaded successfully",
+        allOrders,
+      });
+      console.log("The orders", allOrders);
+    } else {
+      res.send("unauthorized");
+    }
+  }
 });
 
 module.exports = router;
