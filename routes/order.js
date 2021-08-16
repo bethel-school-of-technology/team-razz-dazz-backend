@@ -192,7 +192,10 @@ router.get("/adminorderview", async (req, res, next) => {
       });
       console.log("The orders", allOrders);
     } else {
-      res.send("unauthorized");
+      res.json({
+        message: "You are not authorized",
+        status: 403
+      })
     }
   }
 });

@@ -152,9 +152,14 @@ router.get("/admin", async (req, res, next) => {
       });
       console.log("The users", allUsers);
     } else {
-      res.send("unauthorized");
+      res.json({
+        message: "nope",
+        status: 403
+      })
     }
   }
 });
+
+
 
 module.exports = router;
