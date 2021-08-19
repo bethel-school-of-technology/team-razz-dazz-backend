@@ -3,10 +3,9 @@ var router = express.Router();
 var Order = require("../models/order");
 var tokenService = require("../services/auth");
 var User = require("../models/user");
-var nodemailer = require('nodemailer');
-var cors = require('cors');
-const creds = require('../config');
-
+var nodemailer = require("nodemailer");
+var cors = require("cors");
+const creds = require("../config");
 
 var transport = {
   host: "smtp.gmail.com",
@@ -44,14 +43,14 @@ router.post("/ordersubmit", async (req, res, next) => {
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
         address: req.body.address,
-        orderSummary: req.body.orderSummary
+        orderSummary: req.body.orderSummary,
       });
       // console.log(newOrder);
       let result = await newOrder.save();
       console.log(result);
       res.send("order created");
     } else {
-      res.send("unauthorized")
+      res.send("unauthorized");
     }
   }
 });
@@ -62,7 +61,7 @@ router.post("/send", (req, res, next) => {
   var lastName = req.body.lastName;
   var email = req.body.email;
   var phoneNumber = req.body.phoneNumber;
-  var address = req.body.address
+  var address = req.body.address;
   var orderSummary = req.body.orderSummary;
   var content = `firstname: ${firstName} \n lastname: ${lastName} \n email: ${email} \n mobile: ${phoneNumber} \n address: ${address} \n order: ${orderSummary} `;
 
@@ -101,7 +100,6 @@ router.post("/send", (req, res, next) => {
   });
 });
 
-
 // GET order information/new orders
 router.get("/usersubmission", async (req, res, next) => {
   let myToken = req.headers.authorization;
@@ -113,21 +111,21 @@ router.get("/usersubmission", async (req, res, next) => {
 
     if (currentUser) {
       let bakedGoods = await Order.find({
-        email: currentUser.email
+        email: currentUser.email,
       });
       res.json({
         message: "Let's take a look at your delicious order summary!",
         status: 200,
         currentUser,
-        bakedGoods
-      }); 
-    } else  {
-    res.json({
-      message: "Whoops, something's not jiving",
-      status: 403
-    });
+        bakedGoods,
+      });
+    } else {
+      res.json({
+        message: "Whoops, something's not jiving",
+        status: 403,
+      });
+    }
   }
-}
 });
 
 // Contact Form
@@ -192,9 +190,43 @@ router.get("/adminorderview", async (req, res, next) => {
       });
       console.log("The orders", allOrders);
     } else {
-      res.send("unauthorized");
+      res.json({
+        message: "You are not authorized",
+        status: 403,
+      });
     }
   }
 });
+
+router.put("/:_id", async (req, res, next) => {
+  const orderId = req.params._id;
+  let myToken = req.headers.authorization;
+  console.log(orderId);
+
+  if (myToken) {
+    let currentUser = await tokenService.verifyToken(myToken);
+    // console.log(currentUser);
+    if (currentUser) {
+      Order.findByIdAndUpdate(
+        orderId,
+        { deleted: true },
+        function (error, result) {
+          if (error) {
+            res.json({
+              message: "Deleting the order has failed",
+            });
+          } else {
+            // console.log(result);
+            res.json({
+              message: "Success, the order has been deleted!",
+            });
+          }
+        }
+      );
+    }
+  }
+});
+
+
 
 module.exports = router;

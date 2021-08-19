@@ -2,6 +2,9 @@ var mongoose = require("mongoose");
 
 var orderSchema = new mongoose.Schema({
   firstName: {
+    _id: {
+      type: Number
+    },
     type: String,
     required: true,
   },
