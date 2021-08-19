@@ -26,53 +26,17 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-// router.post("/login", async (req, res, next) => {
-//   User.findOne({
-//     where: {
-//       username: req.body.username,
-//     },
-//   }).then((user) => {
-//     if (!user) {
-//       res.status(404).send("Invalid Username");
-//       return;
-//     }
-
-//     const valid = bcrypt.compare(req.body.password, user.password);
-
-//     if (valid) {
-//       let token = tokenService.assignToken(user);
-//       res.json({
-//         message: "Login successful",
-//         status: 200,
-//         token,
-//       });
-//     } else {
-//       console.log("Wrong Password");
-//       res.json({
-//         message: "Wrong Password",
-//         status: 403,
-//       });
-//     }
-//   });
-// });
 
 //User Login
 router.post("/login", async (req, res, next) => {
   User.findOne({ username: req.body.username }, function (err, user) {
-    if (err) {
+    if (!user) {
       console.log(err);
       res.json({
-        message: "Error Accessing Database",
+        message: "This user does not exist",
         status: 500,
       });
     }
-
-    // if(!user) {
-    //   console.log("This user does not exist");
-    //   res.json({
-    //     message: "This user does not exist"
-    //   });
-    // }
 
     console.log(user);
     if (user) {
@@ -108,14 +72,9 @@ router.get("/profile", async (req, res, next) => {
     console.log(currentUser);
 
     if (currentUser) {
-      let responseUser = {
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
-        email: currentUser.email,
-        username: currentUser.username,
-        deleted: currentUser.deleted,
-        admin: currentUser.admin,
-      };
+      let responseUser = User.findOne({
+        _id: currentUser._id
+      });
       res.json({
         message: "User profile information loaded successfully",
         status: 200,
@@ -154,12 +113,40 @@ router.get("/admin", async (req, res, next) => {
     } else {
       res.json({
         message: "nope",
-        status: 403
-      })
+        status: 403,
+      });
     }
   }
 });
 
+//Update the user to deleted:true
+router.put("/:_id", async (req, res, next) => {
+  const userId = req.params._id;
+  let myToken = req.headers.authorization;
+  console.log(userId);
 
+  if (myToken) {
+    let currentUser = await tokenService.verifyToken(myToken);
+    // console.log(currentUser);
+    if (currentUser) {
+      User.findByIdAndUpdate(
+        userId,
+        { deleted: true },
+        function (error, result) {
+          if (error) {
+            res.json({
+              message: "Deleting the user has failed",
+            });
+          } else {
+            // console.log(result);
+            res.json({
+              message: "Success, the user has been deleted!"
+            })
+          }
+        }
+      );
+    }
+  }
+});
 
 module.exports = router;

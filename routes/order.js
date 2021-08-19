@@ -198,33 +198,31 @@ router.get("/adminorderview", async (req, res, next) => {
   }
 });
 
-router.put("/orderdelete", async (req, res, next) => {
+router.put("/:_id", async (req, res, next) => {
+  const orderId = req.params._id;
   let myToken = req.headers.authorization;
-  const id = req.body._id;
-  console.log(myToken);
+  console.log(orderId);
 
   if (myToken) {
     let currentUser = await tokenService.verifyToken(myToken);
-    console.log(currentUser);
-    console.log("My ID", id);
-    if (currentUser.id) {
-      // console.log("I'm the current user!", currentUser);
-      let deletedOrder = await Order.updateOne(
-        {
-          deleted: true,
-        },
-        {
-          where: {
-            _id: req.body._id
-          },
+    // console.log(currentUser);
+    if (currentUser) {
+      Order.findByIdAndUpdate(
+        orderId,
+        { deleted: true },
+        function (error, result) {
+          if (error) {
+            res.json({
+              message: "Deleting the order has failed",
+            });
+          } else {
+            // console.log(result);
+            res.json({
+              message: "Success, the order has been deleted!",
+            });
+          }
         }
       );
-      // console.log(newOrder);
-      console.log("Yo momma", deletedOrder);
-      const updatedOrder = await Order.findOne({ where: { _id: id } });
-      res.send(updatedOrder);
-    } else {
-      res.send("unauthorized");
     }
   }
 });
