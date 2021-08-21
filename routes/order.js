@@ -200,7 +200,7 @@ router.get("/adminorderview", async (req, res, next) => {
 
 router.put("/:_id", async (req, res, next) => {
   const orderId = req.params._id;
-  let myToken = req.headers.authorization;
+  let myToken = req.body.headers;
   console.log(orderId);
 
   if (myToken) {

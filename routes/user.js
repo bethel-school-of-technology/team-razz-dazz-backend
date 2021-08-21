@@ -122,7 +122,7 @@ router.get("/admin", async (req, res, next) => {
 //Update the user to deleted:true
 router.put("/:_id", async (req, res, next) => {
   const userId = req.params._id;
-  let myToken = req.headers.authorization;
+  let myToken = req.body.headers;
   console.log(userId);
 
   if (myToken) {
