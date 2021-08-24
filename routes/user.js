@@ -5,27 +5,46 @@ var User = require("../models/user");
 var tokenService = require("../services/auth");
 var passwordService = require("../services/password");
 
-//User Registration
-router.post("/register", async (req, res, next) => {
-  try {
-    console.log(req.body);
-    let newUser = new User({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      username: req.body.username,
-      password: passwordService.hashPassword(req.body.password),
-    });
-    console.log(newUser);
-    let result = await newUser.save();
-    console.log(result);
-    res.send(newUser);
-  } catch (err) {
-    console.log(err);
-    res.send("error");
-  }
-});
+const { body, validationResult } = require("express-validator");
 
+//User Registration
+router.post(
+  "/register",
+  body("email").isEmail(),
+  body("password").isStrongPassword({
+    minLength: 8,
+    minLowercase: 1,
+    minUppercase: 1,
+    minNumbers: 1,
+  }),
+  async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+      });
+    }
+    try {
+      console.log(req.body);
+      let newUser = new User({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        username: req.body.username,
+        password: passwordService.hashPassword(req.body.password),
+      });
+      console.log(newUser);
+      let result = await newUser.save();
+      console.log(result);
+      res.send(newUser);
+    } catch (err) {
+      console.log(err);
+      res.send("error");
+    }
+  }
+);
 
 //User Login
 router.post("/login", async (req, res, next) => {
@@ -73,7 +92,7 @@ router.get("/profile", async (req, res, next) => {
 
     if (currentUser) {
       let responseUser = User.findOne({
-        _id: currentUser._id
+        _id: currentUser._id,
       });
       res.json({
         message: "User profile information loaded successfully",
@@ -140,8 +159,8 @@ router.put("/:_id", async (req, res, next) => {
           } else {
             // console.log(result);
             res.json({
-              message: "Success, the user has been deleted!"
-            })
+              message: "Success, the user has been deleted!",
+            });
           }
         }
       );

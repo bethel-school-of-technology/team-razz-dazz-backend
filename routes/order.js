@@ -7,6 +7,8 @@ var nodemailer = require("nodemailer");
 var cors = require("cors");
 const creds = require("../config");
 
+const { body, validationResult } = require("express-validator");
+
 var transport = {
   host: "smtp.gmail.com",
   port: 587,
@@ -27,9 +29,17 @@ transporter.verify((error, success) => {
 });
 
 // New order from User
-router.post("/ordersubmit", async (req, res, next) => {
+router.post("/ordersubmit", body("email").isEmail(), async (req, res, next) => {
   let myToken = req.headers.authorization;
   console.log(myToken);
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      errors: errors.array(),
+    });
+  }
 
   if (myToken) {
     let currentUser = await tokenService.verifyToken(myToken);
@@ -112,6 +122,8 @@ router.get("/usersubmission", async (req, res, next) => {
     if (currentUser) {
       let bakedGoods = await Order.find({
         email: currentUser.email,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName
       });
       res.json({
         message: "Let's take a look at your delicious order summary!",
@@ -226,7 +238,5 @@ router.put("/:_id", async (req, res, next) => {
     }
   }
 });
-
-
 
 module.exports = router;
